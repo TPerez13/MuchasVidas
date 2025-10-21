@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String
+  passHash  String
+  createdAt DateTime  @default(now())
+  entries   HabitEntry[]
+  achievements UserAchievement[]
+  notifications Notification[]
+}
+
+model HabitType {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  entries     HabitEntry[]
+}
+
+model HabitEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  typeId    String
+  type      HabitType @relation(fields: [typeId], references: [id])
+  value     Float
+  unit      String
+  notes     String?
+  dateTime  DateTime @default(now())
+
+  @@index([userId, dateTime])
+}
+
+model Achievement {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  criterion   String
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String     @id @default(uuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  obtainedAt    DateTime   @default(now())
+  points        Int
+
+  @@unique([userId, achievementId])
+}
+
+model Notification {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  body         String
+  scheduledFor DateTime
+  sentAt       DateTime?
+  status       String   @default("PENDING")
+}

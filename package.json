@@ -1,0 +1,21 @@
+{
+  "name": "muchavidas",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev -w @muchavidas/api",
+    "dev:app": "npm start -w @muchavidas/app",
+    "build": "npm run build -w @muchavidas/api",
+    "test": "npm test -w @muchavidas/api",
+    "db:migrate": "npm run db:migrate -w @muchavidas/api",
+    "db:studio": "npm run db:studio -w @muchavidas/api",
+    "db:seed": "npm run db:seed -w @muchavidas/api"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
